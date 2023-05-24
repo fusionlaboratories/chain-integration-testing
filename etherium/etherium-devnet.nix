@@ -77,7 +77,7 @@ pkgs.nixosTest {
   nodes = {
     ethereum = { config, pkgs, ... }: {
       networking.firewall.allowedTCPPorts = [ 3500 4000 8080 8545 8551 ];
-
+      nodes.btc.systemd.services.resolved.enabled = true;
       systemd.services.create-beacon-chain-genesis = {
         wantedBy = [ "multi-user.target" ];
         after = [ "network.target" ];

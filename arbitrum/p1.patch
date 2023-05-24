@@ -1,0 +1,11 @@
+diff --git a/global-dir.ts b/global-dir.ts
+index 686fe5079..582504c25 100644
+--- a/global-dir.ts
++++ b/global-dir.ts
+@@ -92,6 +92,7 @@ export async function getCompilersDir() {
+   const cache = await getCacheDir();
+   const compilersCache = path.join(cache, "compilers");
+   await fs.ensureDir(compilersCache);
++  console.error("getCompilersDir(): " + compilersCache)
+   return compilersCache;
+ }

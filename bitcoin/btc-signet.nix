@@ -10,15 +10,21 @@
 let
   bitcoin = pkgsGuest.bitcoin;
   python = pkgsGuest.python311;
+  bash = pkgsGuest.bash;
   git = pkgsGuest.git;
   jq = pkgsGuest.jq;
-  bitcoin-script = import ./signet-script.nix { pkgs = pkgsGuest; };
+  btc-src = fetchTarball {
+    url = "https://github.com/bitcoin/bitcoin/archive/refs/tags/v24.1.tar.gz";
+    sha256="0cbpq2rnx03lgncp101lsx9jy5k6p91b3vnj0wa5jk3194cvwyca";
+  };
+  bitcoin-script = import ./signet-script.nix { pkgs = pkgsGuest; inherit btc-src; };
 in
 pkgsHost.nixosTest {
   name = "signet-test";
   nodes.btc.nixpkgs.pkgs = pkgsGuest;
+  #nodes.btc.systemd.services.resolved.enabled = true;
   nodes.btc.virtualisation.host.pkgs = pkgsHost;
-  nodes.btc.networking.firewall.allowedTCPPorts = [38333 38332];
+  nodes.btc.networking.firewall.allowedTCPPorts = [18443 38333 38332];
   nodes.btc.systemd.services.hello-world = {
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];

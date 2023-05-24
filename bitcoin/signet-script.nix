@@ -1,9 +1,12 @@
-{ pkgs }: pkgs.writeScript "signet.sh" ''
-#!/bin/sh
-"${pkgs.git}/bin/git" clone https://github.com/bitcoin/bitcoin.git
-cd bitcoin/src
+{ pkgs, btc-src }: pkgs.writeScript "signet.sh" ''
+#!${pkgs.bash}/bin/bash
 
-"${pkgs.bitcoind}/bin/bitcoin-cli" -regtest -datadir=$datadir createwallet test
+cd ${btc-src}/src
+
+"${pkgs.bitcoind}/bin/bitcoind" -regtest -daemon=1"
+"${pkgs.bitcoind}/bin/bitcoin-cli" -regtest createwallet test
+
+
 printf "Waiting for regtest bitcoind to start"
 while ! "${pkgs.bitcoind}/bin/bitcoin-cli" -regtest -datadir=$datadir getconnectioncount 2>/dev/null 1>&2
 do printf .; sleep 1
@@ -25,8 +28,6 @@ PUBKEY=$PUBKEY
 SCRIPT=$SCRIPT
 EOF
 
-"${pkgs.bitcoind}/bin/bitcoin-cli" -regtest stop 2>&1
-
 datadir=$HOME/signet-custom-$$
 mkdir $datadir
 cat > $datadir/bitcoin.conf <<EOF
@@ -35,6 +36,9 @@ signet=1
 daemon=1
 signetchallenge=$SCRIPT
 EOF
+
+"${pkgs.bitcoind}/bin/bitcoin-cli" -regtest stop 2>&1
+
 "${pkgs.bitcoind}/bin/bitcoind" -datadir=$datadir -wallet="test"
 
 printf "Waiting for custom Signet bitcoind to start"

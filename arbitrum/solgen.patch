@@ -1,0 +1,29 @@
+diff --git a/solgen/gen.go b/solgen/gen.go
+index 6b044e8c..a4582a44 100644
+--- a/solgen/gen.go
++++ b/solgen/gen.go
+@@ -9,7 +9,6 @@ import (
+ 	"log"
+ 	"os"
+ 	"path/filepath"
+-	"runtime"
+ 	"strings"
+ 
+ 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+@@ -53,12 +52,11 @@ func (m *moduleInfo) exportABIs(dest string) {
+ }
+ 
+ func main() {
+-	_, filename, _, ok := runtime.Caller(0)
+-	if !ok {
+-		log.Fatal("bad path")
++	parent := os.Args[1]
++	root, err := os.Getwd()
++	if err != nil {
++		log.Fatal(err)
+ 	}
+-	root := filepath.Dir(filename)
+-	parent := filepath.Dir(root)
+ 	filePaths, err := filepath.Glob(filepath.Join(parent, "contracts", "build", "contracts", "src", "*", "*", "*.json"))
+ 	if err != nil {
+ 		log.Fatal(err)

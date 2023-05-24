@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index 7621d640..830dafa9 100644
+--- a/package.json
++++ b/package.json
+@@ -18,7 +18,7 @@
+     "url": "https://github.com/offchainlabs/nitro/issues"
+   },
+   "scripts": {
+-    "build": "./scripts/build.bash",
++    "build": "sh ./scripts/build.bash",
+     "lint:test": "eslint ./test",
+     "solhint": "solhint -f table src/**/*.sol",
+     "prettier:solidity": "prettier --write src/**/*.sol",
